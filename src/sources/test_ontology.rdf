@@ -1,0 +1,251 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns="http://example.org/ontology#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xml:base="http://example.org/ontology">
+
+    <!-- Определение онтологии -->
+    <owl:Ontology rdf:about="http://example.org/ontology">
+        <rdfs:comment>Онтология животных для логического, семантического и структурного анализа</rdfs:comment>
+    </owl:Ontology>
+
+    <!-- Определение классов -->
+    <!-- Верхнеуровневые классы -->
+    <owl:Class rdf:about="http://example.org/ontology#Animal">
+        <rdfs:label>Животное</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/ontology#Plant">
+        <rdfs:label>Растение</rdfs:label>
+    </owl:Class>
+
+    <!-- Подклассы животных -->
+    <owl:Class rdf:about="http://example.org/ontology#Mammal">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Млекопитающее</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/ontology#Bird">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Птица</rdfs:label>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/ontology#Reptile">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Рептилия</rdfs:label>
+    </owl:Class>
+
+    <!-- Аксиомы дисъюнктности классов -->
+    <owl:AllDisjointClasses>
+        <owl:members rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://example.org/ontology#Mammal"/>
+            <rdf:Description rdf:about="http://example.org/ontology#Bird"/>
+            <rdf:Description rdf:about="http://example.org/ontology#Reptile"/>
+        </owl:members>
+    </owl:AllDisjointClasses>
+
+    <!-- Определение свойств -->
+    <!-- Свойства объектов -->
+    <owl:ObjectProperty rdf:about="http://example.org/ontology#hasHabitat">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://example.org/ontology#Habitat"/>
+        <rdfs:label>имеет среду обитания</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/ontology#eats">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://example.org/ontology#Food"/>
+        <rdfs:label>ест</rdfs:label>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/ontology#predatorOf">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>является хищником для</rdfs:label>
+        <owl:inverseOf rdf:resource="http://example.org/ontology#preyOf"/>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/ontology#preyOf">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>является добычей для</rdfs:label>
+        <owl:inverseOf rdf:resource="http://example.org/ontology#predatorOf"/>
+    </owl:ObjectProperty>
+
+    <!-- Транзитивное свойство -->
+    <owl:TransitiveProperty rdf:about="http://example.org/ontology#relatedTo">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>связан с</rdfs:label>
+    </owl:TransitiveProperty>
+
+    <!-- Свойства данных -->
+    <owl:DatatypeProperty rdf:about="http://example.org/ontology#hasAge">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+        <rdfs:label>имеет возраст</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/ontology#hasName">
+        <rdfs:domain rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:label>имеет имя</rdfs:label>
+    </owl:DatatypeProperty>
+
+    <!-- Определение классов-соединений и ограничений -->
+    <!-- Класс животных-растительноядных -->
+    <owl:Class rdf:about="http://example.org/ontology#Herbivore">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Растительноядное</rdfs:label>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/ontology#eats"/>
+                <owl:allValuesFrom rdf:resource="http://example.org/ontology#Plant"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <!-- Класс животных-хищников -->
+    <owl:Class rdf:about="http://example.org/ontology#Carnivore">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Хищник</rdfs:label>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/ontology#eats"/>
+                <owl:someValuesFrom rdf:resource="http://example.org/ontology#Animal"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <!-- Класс животных-детей -->
+    <owl:Class rdf:about="http://example.org/ontology#YoungAnimal">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Animal"/>
+        <rdfs:label>Молодое животное</rdfs:label>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/ontology#hasAge"/>
+                <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</owl:maxQualifiedCardinality>
+                <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <!-- Определение индивидов -->
+    <!-- Среды обитания -->
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#Savannah">
+        <rdf:type rdf:resource="http://example.org/ontology#Habitat"/>
+        <rdfs:label>Саванна</rdfs:label>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#Forest">
+        <rdf:type rdf:resource="http://example.org/ontology#Habitat"/>
+        <rdfs:label>Лес</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- Животные -->
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#Lion1">
+        <rdf:type rdf:resource="http://example.org/ontology#Mammal"/>
+        <rdf:type rdf:resource="http://example.org/ontology#Carnivore"/>
+        <hasName xml:lang="ru">Лев Симба</hasName>
+        <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">5</hasAge>
+        <hasHabitat rdf:resource="http://example.org/ontology#Savannah"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#Zebra1">
+        <rdf:type rdf:resource="http://example.org/ontology#Mammal"/>
+        <rdf:type rdf:resource="http://example.org/ontology#Herbivore"/>
+        <hasName xml:lang="ru">Зебра Марти</hasName>
+        <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</hasAge>
+        <hasHabitat rdf:resource="http://example.org/ontology#Savannah"/>
+    </owl:NamedIndividual>
+
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#LionCub1">
+        <rdf:type rdf:resource="http://example.org/ontology#Mammal"/>
+        <rdf:type rdf:resource="http://example.org/ontology#Carnivore"/>
+        <rdf:type rdf:resource="http://example.org/ontology#YoungAnimal"/>
+        <hasName xml:lang="ru">Львенок Кову</hasName>
+        <hasAge rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</hasAge>
+        <hasHabitat rdf:resource="http://example.org/ontology#Savannah"/>
+    </owl:NamedIndividual>
+
+    <!-- Отношения между животными -->
+    <rdf:Description rdf:about="http://example.org/ontology#Lion1">
+        <predatorOf rdf:resource="http://example.org/ontology#Zebra1"/>
+        <relatedTo rdf:resource="http://example.org/ontology#LionCub1"/>
+    </rdf:Description>
+
+    <!-- Аксиомы эквивалентности -->
+    <!-- Животные с возрастом меньше 2 лет эквивалентны классу YoungAnimal -->
+    <owl:EquivalentClasses>
+        <owl:Class rdf:about="http://example.org/ontology#YoungAnimal"/>
+        <owl:Class>
+            <owl:intersectionOf rdf:parseType="Collection">
+                <rdf:Description rdf:about="http://example.org/ontology#Animal"/>
+                <owl:Restriction>
+                    <owl:onProperty rdf:resource="http://example.org/ontology#hasAge"/>
+                    <owl:maxQualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">2</owl:maxQualifiedCardinality>
+                    <owl:onDataRange rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+                </owl:Restriction>
+            </owl:intersectionOf>
+        </owl:Class>
+    </owl:EquivalentClasses>
+
+    <!-- Аксиомы функциональности свойств -->
+    <owl:FunctionalProperty rdf:about="http://example.org/ontology#hasAge"/>
+
+    <!-- Аксиомы симметричности -->
+    <owl:SymmetricProperty rdf:about="http://example.org/ontology#relatedTo"/>
+
+    <!-- Аксиомы непересечения классов животных и растений -->
+    <owl:DisjointClasses>
+        <owl:Class rdf:about="http://example.org/ontology#Animal"/>
+        <owl:Class rdf:about="http://example.org/ontology#Plant"/>
+    </owl:DisjointClasses>
+
+    <!-- Определение растения -->
+    <owl:NamedIndividual rdf:about="http://example.org/ontology#Grass">
+        <rdf:type rdf:resource="http://example.org/ontology#Plant"/>
+        <rdfs:label>Трава</rdfs:label>
+    </owl:NamedIndividual>
+
+    <!-- Связь зебры с пищей -->
+    <rdf:Description rdf:about="http://example.org/ontology#Zebra1">
+        <eats rdf:resource="http://example.org/ontology#Grass"/>
+    </rdf:Description>
+
+    <!-- Связь льва с пищей -->
+    <rdf:Description rdf:about="http://example.org/ontology#Lion1">
+        <eats rdf:resource="http://example.org/ontology#Zebra1"/>
+    </rdf:Description>
+
+    <!-- Дополнительные аксиомы -->
+    <!-- Установление того, что у каждого животного есть хотя бы одна среда обитания -->
+    <owl:Class rdf:about="http://example.org/ontology#Animal">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/ontology#hasHabitat"/>
+                <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <!-- Определение класса животных, которые едят только растения -->
+    <owl:Class rdf:about="http://example.org/ontology#StrictHerbivore">
+        <rdfs:subClassOf rdf:resource="http://example.org/ontology#Herbivore"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://example.org/ontology#eats"/>
+                <owl:allValuesFrom rdf:resource="http://example.org/ontology#Plant"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+
+    <!-- Зебра как строгий травоядный -->
+    <rdf:Description rdf:about="http://example.org/ontology#Zebra1">
+        <rdf:type rdf:resource="http://example.org/ontology#StrictHerbivore"/>
+    </rdf:Description>
+
+</rdf:RDF>
